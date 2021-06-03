@@ -15,10 +15,42 @@ function createCityDateHeading(city) {
   return h2;
 }
 
+function createIcon(weatherInfo) {
+  const span = document.createElement('span');
+
+  span.innerHTML = `<img src="https://openweathermap.org/img/w/${
+    weatherInfo.icon
+  }.png" alt="${weatherInfo.description || weatherInfo.main}" />`;
+
+  return span;
+}
+
+function renderCurrent(city, currentForecast) {
+  current.innerHTML = '';
+  const currentHeading = createCityDateHeading(city);
+  const iconSpan = createIcon(currentForecast.weather[0]);
+
+  renderCurrentHeading(currentHeading, iconSpan);
+  renderCurrentWeather(currentForecast);
+}
+
 function renderCurrentHeading(heading, icon) {
   // ⚠️ Don't try to compose `appendChild` 🤷🏾‍♂️
   heading.appendChild(icon);
   current.appendChild(heading);
+}
+
+function renderCurrentWeather(currentWeather) {
+  const ul = document.createElement('ul');
+
+  ul.innerHTML = `
+    <li>Temp: ${currentWeather.temp}°F</li>
+    <li>Wind: ${currentWeather.wind_speed} MPH</li>
+    <li>Humidity: ${currentWeather.humidity} %</li>
+    <li>UV Index ${renderUVI(currentWeather.uvi)}</li>
+  `;
+
+  current.appendChild(ul);
 }
 
 function renderHistoryButton(city) {
@@ -35,40 +67,6 @@ function renderHistoryButtons() {
       renderHistoryButton(city);
     });
   }
-}
-
-function createIcon(weatherInfo) {
-  const span = document.createElement('span');
-
-  span.innerHTML = `<img src="https://openweathermap.org/img/w/${
-    weatherInfo.icon
-  }.png" alt="${weatherInfo.description || weatherInfo.main}" />`;
-
-  return span;
-}
-
-// TODO: Move this to api.js
-
-function renderCurrentWeather(currentWeather) {
-  const ul = document.createElement('ul');
-
-  ul.innerHTML = `
-    <li>Temp: ${currentWeather.temp}°F</li>
-    <li>Wind: ${currentWeather.wind_speed} MPH</li>
-    <li>Humidity: ${currentWeather.humidity} %</li>
-    <li>UV Index ${renderUVI(currentWeather.uvi)}</li>
-  `;
-
-  current.appendChild(ul);
-}
-
-function renderCurrent(city, currentForecast) {
-  current.innerHTML = '';
-  const currentHeading = createCityDateHeading(city);
-  const iconSpan = createIcon(currentForecast.weather[0]);
-
-  renderCurrentHeading(currentHeading, iconSpan);
-  renderCurrentWeather(currentForecast);
 }
 
 function renderUVI(uvIndex) {
@@ -90,8 +88,8 @@ document.querySelector('form').addEventListener('submit', async event => {
 
   const city = event.target.elements[0].value;
   const forecast = await fetchWeather(city);
-  renderCurrent(city, forecast.current);
 
+  renderCurrent(city, forecast.current);
   addCity2Storage(city);
   renderHistoryButtons();
 });
