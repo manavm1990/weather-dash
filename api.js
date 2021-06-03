@@ -19,17 +19,16 @@ export const addCity2Storage = city => {
   }
 };
 
-export const fetchCurrentWeather = async city => {
-  const data = await fetch(
-    `${WEATHER_URL}?q=${city}&appid=${API_KEY}&units=imperial`,
-  );
+export const fetchCoord = async city => {
+  const data = await fetch(`${WEATHER_URL}?q=${city}&appid=${API_KEY}`);
 
-  return data.json();
+  const { coord } = await data.json();
+  return coord;
 };
 
 export const fetchForecast = async (lat, lon) => {
   const data = await fetch(
-    `${FORECAST_URL}?&appid=${API_KEY}&lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts,units=imperial`,
+    `${FORECAST_URL}?&appid=${API_KEY}&lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial`,
   );
 
   return data.json();

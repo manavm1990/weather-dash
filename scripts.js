@@ -1,65 +1,25 @@
-import { addCity2Storage, fetchCurrentWeather, fetchForecast } from './api.js';
+import { addCity2Storage, fetchCoord, fetchForecast } from './api.js';
 
 const current = document.querySelector('#current');
 const history = document.querySelector('#history');
 
-async function fetchWeather(city) {
-  const ret = {};
-
-  return fetchCurrentWeather(city)
-    .then(currentWeather => {
-      ret.currentWeather = currentWeather;
-      return { lat: currentWeather.coord.lat, lon: currentWeather.coord.lon };
-    })
-    .then(({ lat, lon }) => fetchForecast(lat, lon))
-    .then(forecast => {
-      ret.forecast = forecast;
-      return ret;
-    })
-    .then(ret => ret);
-}
-
-function renderIcon(weatherInfo) {
-  const span = document.createElement('span');
-
-  const [weather] = weatherInfo.weather;
-  span.innerHTML = `<img src="https://openweathermap.org/img/w/${
-    weather.icon
-  }.png" alt="${weather.description || weather.main}" />`;
-
-  return span;
-}
-
-function renderCurrent(weatherData) {
+function createCityDateHeading(city) {
   const h2 = document.createElement('h2');
-
   const now = new Date(Date.now());
 
   h2.classList.add('fs-2', 'fw-bold');
-  h2.innerText = `${weatherData.name} (${
+  h2.innerText = `${city} (${
     now.getMonth() + 1
   }/${now.getDate()}/${now.getFullYear()})`;
 
-  current.innerHTML = '';
-  current.appendChild(h2);
-  h2.appendChild(renderIcon(weatherData));
-  renderCurrentDetails(weatherData);
+  return h2;
 }
 
-function renderCurrentDetails(weather) {
-  const ul = document.createElement('ul');
-
-  ul.innerHTML = `
-    <li>Temp: ${weather.main.temp}°F</li>
-    <li>Wind: ${weather.wind.speed} MPH</li>
-    <li>Humidity: ${weather.main.humidity} %</li>
-    <li>UV Index</li>
-  `;
-
-  current.appendChild(ul);
+function renderCurrentHeading(heading, icon) {
+  // ⚠️ Don't try to compose `appendChild` 🤷🏾‍♂️
+  heading.appendChild(icon);
+  current.appendChild(heading);
 }
-
-function renderForecast(forecast) {}
 
 function renderHistoryButton(city) {
   history.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
@@ -77,23 +37,71 @@ function renderHistoryButtons() {
   }
 }
 
+function createIcon(weatherInfo) {
+  const span = document.createElement('span');
+
+  span.innerHTML = `<img src="https://openweathermap.org/img/w/${
+    weatherInfo.icon
+  }.png" alt="${weatherInfo.description || weatherInfo.main}" />`;
+
+  return span;
+}
+
+// TODO: Move this to api.js
+function fetchWeather(city) {
+  return fetchCoord(city)
+    .then(coords => coords)
+    .then(({ lat, lon }) => fetchForecast(lat, lon));
+}
+
+function renderCurrentWeather(currentWeather) {
+  const ul = document.createElement('ul');
+
+  ul.innerHTML = `
+    <li>Temp: ${currentWeather.temp}°F</li>
+    <li>Wind: ${currentWeather.wind_speed} MPH</li>
+    <li>Humidity: ${currentWeather.humidity} %</li>
+    <li>UV Index ${renderUVI(currentWeather.uvi)}</li>
+  `;
+
+  current.appendChild(ul);
+}
+
+function renderUVI(uvIndex) {
+  let className;
+
+  if (uvIndex < 3) {
+    className = 'bg-success';
+  } else if (uvIndex < 7) {
+    className = 'bg-warning';
+  } else {
+    className = 'bg-danger';
+  }
+
+  return `<span class="badge rounded-pill ${className}">${uvIndex}</span>`;
+}
+
 document.querySelector('form').addEventListener('submit', async event => {
   event.preventDefault();
 
   const city = event.target.elements[0].value;
-  const { currentWeather, forecast } = await fetchWeather(city);
+  const forecast = await fetchWeather(city);
 
   addCity2Storage(city);
-  renderCurrent(currentWeather);
-  renderForecast(forecast);
-  renderHistoryButtons();
+  const currentHeading = createCityDateHeading(city);
+  const iconSpan = createIcon(forecast.current.weather[0]);
+
+  renderCurrentHeading(currentHeading, iconSpan);
+  renderCurrentWeather(forecast.current);
+  // RenderForecast(forecast);
+  // renderHistoryButtons();
 });
 
 // Bubbling 🧋
-document.querySelector('#history').addEventListener('click', async event => {
-  const city = event.target.innerText;
-  const weather = await fetchCurrentWeather(city);
-  renderCurrent(weather);
-});
+// document.querySelector('#history').addEventListener('click', async event => {
+//   const city = event.target.innerText;
+//   const weather = await fetchCurrentWeather(city);
+//   renderCurrent(weather);
+// });
 
 renderHistoryButtons();
