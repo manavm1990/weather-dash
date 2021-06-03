@@ -62,6 +62,15 @@ function renderCurrentWeather(currentWeather) {
   current.appendChild(ul);
 }
 
+function renderCurrent(city, currentForecast) {
+  current.innerHTML = '';
+  const currentHeading = createCityDateHeading(city);
+  const iconSpan = createIcon(currentForecast.weather[0]);
+
+  renderCurrentHeading(currentHeading, iconSpan);
+  renderCurrentWeather(currentForecast);
+}
+
 function renderUVI(uvIndex) {
   let className;
 
@@ -81,22 +90,18 @@ document.querySelector('form').addEventListener('submit', async event => {
 
   const city = event.target.elements[0].value;
   const forecast = await fetchWeather(city);
+  renderCurrent(city, forecast.current);
 
   addCity2Storage(city);
-  const currentHeading = createCityDateHeading(city);
-  const iconSpan = createIcon(forecast.current.weather[0]);
-
-  renderCurrentHeading(currentHeading, iconSpan);
-  renderCurrentWeather(forecast.current);
-  // RenderForecast(forecast);
-  // renderHistoryButtons();
+  renderHistoryButtons();
 });
 
 // Bubbling 🧋
-// document.querySelector('#history').addEventListener('click', async event => {
-//   const city = event.target.innerText;
-//   const weather = await fetchCurrentWeather(city);
-//   renderCurrent(weather);
-// });
+document.querySelector('#history').addEventListener('click', async event => {
+  const city = event.target.innerText;
+  const forecast = await fetchWeather(city);
+
+  renderCurrent(city, forecast.current);
+});
 
 renderHistoryButtons();
