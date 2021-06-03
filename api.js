@@ -29,7 +29,7 @@ export const fetchCurrentWeather = async city => {
 
 export const fetchForecast = async (lat, lon) => {
   const data = await fetch(
-    `${FORECAST_URL}?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts,units=imperial`,
+    `${FORECAST_URL}?&appid=${API_KEY}&lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts,units=imperial`,
   );
 
   return data.json();
