@@ -1,4 +1,4 @@
-import { addCity2Storage, fetchCoord, fetchForecast } from './api.js';
+import { addCity2Storage, fetchWeather } from './api.js';
 
 const current = document.querySelector('#current');
 const history = document.querySelector('#history');
@@ -48,11 +48,6 @@ function createIcon(weatherInfo) {
 }
 
 // TODO: Move this to api.js
-function fetchWeather(city) {
-  return fetchCoord(city)
-    .then(coords => coords)
-    .then(({ lat, lon }) => fetchForecast(lat, lon));
-}
 
 function renderCurrentWeather(currentWeather) {
   const ul = document.createElement('ul');

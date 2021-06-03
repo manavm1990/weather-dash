@@ -9,6 +9,21 @@ function capitalizeEachWord(str) {
     .join(' ');
 }
 
+const fetchCoord = async city => {
+  const data = await fetch(`${WEATHER_URL}?q=${city}&appid=${API_KEY}`);
+
+  const { coord } = await data.json();
+  return coord;
+};
+
+const fetchForecast = async (lat, lon) => {
+  const data = await fetch(
+    `${FORECAST_URL}?&appid=${API_KEY}&lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial`,
+  );
+
+  return data.json();
+};
+
 export const addCity2Storage = city => {
   const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
   if (!searchHistory.includes(capitalizeEachWord(city))) {
@@ -19,17 +34,7 @@ export const addCity2Storage = city => {
   }
 };
 
-export const fetchCoord = async city => {
-  const data = await fetch(`${WEATHER_URL}?q=${city}&appid=${API_KEY}`);
-
-  const { coord } = await data.json();
-  return coord;
-};
-
-export const fetchForecast = async (lat, lon) => {
-  const data = await fetch(
-    `${FORECAST_URL}?&appid=${API_KEY}&lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial`,
-  );
-
-  return data.json();
-};
+export const fetchWeather = city =>
+  fetchCoord(city)
+    .then(coords => coords)
+    .then(({ lat, lon }) => fetchForecast(lat, lon));
