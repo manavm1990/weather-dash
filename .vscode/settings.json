@@ -35,5 +35,8 @@
   "workbench.enableExperiments": false,
   "workbench.iconTheme": "material-icon-theme",
   "workbench.view.alwaysShowHeaderActions": true,
-  "editor.parameterHints.enabled": false
+  "editor.parameterHints.enabled": false,
+  "cSpell.words": [
+    "coord"
+  ]
 }
