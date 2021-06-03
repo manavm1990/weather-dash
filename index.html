@@ -10,10 +10,33 @@
       integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
       crossorigin="anonymous"
     />
-    <title>Bootstrap Starter</title>
+    <title>Weather Dashboard</title>
   </head>
   <body>
-    <h1>Bootstrap Starter</h1>
+    <header class="bg-primary bg-gradient mb-3 py-3">
+      <h1 class="fs-1 fw-bold text-center text-light">Weather Dashboard</h1>
+    </header>
+
+    <form class="d-flex flex-column gap-2 align-items-center">
+      <label for="city-search" class="fs-3 fw-bold">Search for a City</label
+      ><input type="search" placeholder="San Diego" class="rounded w-75" />
+
+      <button
+        type="submit"
+        class="bg-success mt-2 px-2 py-1 rounded text-white"
+      >
+        Search 🔍
+      </button>
+    </form>
+
+    <div class="list-group" id="history"></div>
+
+    <div id="results">
+      <section id="today" role="region" aria-live="polite"></section>
+
+      <section id="forecast" role="region" aria-live="polite"></section>
+    </div>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
