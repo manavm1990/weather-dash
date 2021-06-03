@@ -1,4 +1,4 @@
-import { fetchCurrentWeather, fetchForecast } from './api.js';
+import { addCity2Storage, fetchCurrentWeather, fetchForecast } from './api.js';
 
 const history = document.querySelector('#history');
 
@@ -10,13 +10,14 @@ document.querySelector('form').addEventListener('submit', async event => {
   event.preventDefault();
 
   const city = event.target.elements[0].value;
-
-  renderHistoryButton(city);
-
   const weather = await fetchCurrentWeather(city);
+
+  addCity2Storage(city);
+  renderHistoryButton(city);
 });
 
 // Bubbling 🧋
 document.querySelector('#history').addEventListener('click', async event => {
-  const weather = await fetchCurrentWeather(event.target.innerText);
+  const city = event.target.innerText;
+  const weather = await fetchCurrentWeather(city);
 });
