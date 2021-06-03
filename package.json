@@ -1,15 +1,16 @@
 {
-  "name": "bootstrap-starter",
+  "name": "weather-dashboard",
   "version": "1.1.0",
   "private": true,
-  "description": "A starter template repo for using Bootstrap",
+  "description": "A weather search app 🙄",
   "main": "index.js",
   "scripts": {
     "start": "browser-sync start --server --files '**/*.html, **/*.css, **/**.js'",
     "prepare": "husky install"
   },
   "keywords": [
-    "bootstrap"
+    "bootstrap",
+    "weather"
   ],
   "author": "Manav Misra",
   "license": "MIT",
