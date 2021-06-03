@@ -3,13 +3,16 @@ import { addCity2Storage, fetchCurrentWeather } from './api.js';
 const current = document.querySelector('#current');
 const history = document.querySelector('#history');
 
-const state = {
-  lat: null,
-  long: null,
-};
+function renderIcon(icon) {
+  const span = document.createElement('span');
+  span.innerHTML = `<img src="https://openweathermap.org/img/w/${icon}.png" alt="" />`;
 
-function renderCurrent({ name }) {
+  return span;
+}
+
+function renderCurrent({ name, weather }) {
   const h2 = document.createElement('h2');
+
   const now = new Date(Date.now());
 
   h2.classList.add('fs-2', 'fw-bold');
@@ -19,6 +22,7 @@ function renderCurrent({ name }) {
 
   current.innerHTML = '';
   current.appendChild(h2);
+  h2.appendChild(renderIcon(weather[0].icon));
 }
 
 function renderHistoryButton(city) {
