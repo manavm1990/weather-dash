@@ -1,29 +1,12 @@
-import { addCity2Storage, fetchWeather } from './api.js';
+import {
+  addCity2Storage,
+  createCityDateHeading,
+  createIcon,
+  fetchWeather,
+} from './lib.js';
 
 const current = document.querySelector('#current');
 const history = document.querySelector('#history');
-
-function createCityDateHeading(city) {
-  const h2 = document.createElement('h2');
-  const now = new Date(Date.now());
-
-  h2.classList.add('fs-2', 'fw-bold');
-  h2.innerText = `${city} (${
-    now.getMonth() + 1
-  }/${now.getDate()}/${now.getFullYear()})`;
-
-  return h2;
-}
-
-function createIcon(weatherInfo) {
-  const span = document.createElement('span');
-
-  span.innerHTML = `<img src="https://openweathermap.org/img/w/${
-    weatherInfo.icon
-  }.png" alt="${weatherInfo.description || weatherInfo.main}" />`;
-
-  return span;
-}
 
 function renderCurrent(city, currentForecast) {
   current.innerHTML = '';

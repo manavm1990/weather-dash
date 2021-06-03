@@ -34,6 +34,28 @@ export const addCity2Storage = city => {
   }
 };
 
+export const createCityDateHeading = city => {
+  const h2 = document.createElement('h2');
+  const now = new Date(Date.now());
+
+  h2.classList.add('fs-2', 'fw-bold');
+  h2.innerText = `${city} (${
+    now.getMonth() + 1
+  }/${now.getDate()}/${now.getFullYear()})`;
+
+  return h2;
+};
+
+export const createIcon = weatherInfo => {
+  const span = document.createElement('span');
+
+  span.innerHTML = `<img src="https://openweathermap.org/img/w/${
+    weatherInfo.icon
+  }.png" alt="${weatherInfo.description || weatherInfo.main}" />`;
+
+  return span;
+};
+
 export const fetchWeather = city =>
   fetchCoord(city)
     .then(coords => coords)
