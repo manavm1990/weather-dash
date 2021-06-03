@@ -49,3 +49,5 @@ document.querySelector('#history').addEventListener('click', async event => {
   const weather = await fetchCurrentWeather(city);
   renderCurrent(weather);
 });
+
+renderHistoryButtons();
