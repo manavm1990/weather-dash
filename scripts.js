@@ -40,7 +40,7 @@ document.querySelector('form').addEventListener('submit', async event => {
 
   addCity2Storage(city);
   renderCurrent(weather);
-  renderHistoryButtons(city);
+  renderHistoryButtons();
 });
 
 // Bubbling 🧋
