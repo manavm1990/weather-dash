@@ -2,12 +2,16 @@ const API_KEY = '7cec0fb8a60ef89be9b2dc4e97fa3557';
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/onecall';
 const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 export const addCity2Storage = city => {
   const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-  if (!searchHistory.includes(city)) {
+  if (!searchHistory.includes(capitalize(city))) {
     localStorage.setItem(
       'searchHistory',
-      JSON.stringify([...searchHistory, city]),
+      JSON.stringify([...searchHistory, capitalize(city)]),
     );
   }
 };
