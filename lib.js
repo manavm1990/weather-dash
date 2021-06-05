@@ -1,6 +1,4 @@
-const API_KEY = '7cec0fb8a60ef89be9b2dc4e97fa3557';
-const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/onecall';
-const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
+import config from './config.js';
 
 const current = document.querySelector('#current');
 const history = document.querySelector('#history');
@@ -32,7 +30,9 @@ const createIcon = weatherInfo => {
 };
 
 const fetchCoord = async city => {
-  const data = await fetch(`${WEATHER_URL}?q=${city}&appid=${API_KEY}`);
+  const data = await fetch(
+    `${config.WEATHER_URL}?q=${city}&appid=${config.API_KEY}`,
+  );
 
   const { coord } = await data.json();
   return coord;
@@ -40,7 +40,7 @@ const fetchCoord = async city => {
 
 const fetchForecast = async (lat, lon) => {
   const data = await fetch(
-    `${FORECAST_URL}?&appid=${API_KEY}&lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial`,
+    `${config.FORECAST_URL}?&appid=${config.API_KEY}&lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial`,
   );
 
   return data.json();
