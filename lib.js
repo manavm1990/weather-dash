@@ -14,12 +14,9 @@ function capitalizeEachWord(str) {
 
 const createCityDateHeading = city => {
   const h2 = document.createElement('h2');
-  const now = new Date(Date.now());
 
   h2.classList.add('fs-2', 'fw-bold');
-  h2.innerText = `${city} (${
-    now.getMonth() + 1
-  }/${now.getDate()}/${now.getFullYear()})`;
+  h2.innerText = `${city} (${getDate()})`;
 
   return h2;
 };
@@ -48,6 +45,14 @@ const fetchForecast = async (lat, lon) => {
 
   return data.json();
 };
+
+function getDate(addlDays = 0) {
+  const now = new Date(Date.now());
+
+  return `${now.getMonth() + 1}/${
+    now.getDate() + addlDays
+  }/${now.getFullYear()}`;
+}
 
 function renderCurrentHeading(heading, icon) {
   // ⚠️ Don't try to compose `appendChild` 🤷🏾‍♂️
@@ -109,6 +114,18 @@ export function renderCurrent(city, currentForecast) {
   renderCurrentHeading(currentHeading, iconSpan);
   renderCurrentWeather(currentForecast);
 }
+
+export const renderForecast = forecast => {
+  const forecastSection = document.querySelector('#forecast');
+  const ul = document.createElement('ul');
+
+  ul.innerHTML = forecast
+    .map((_, index) => `<li>${getDate(index + 1)}</li>`)
+    .join('');
+
+  console.log(ul, 'hi');
+  forecastSection.appendChild(ul);
+};
 
 export function renderHistoryButtons() {
   history.innerHTML = '';

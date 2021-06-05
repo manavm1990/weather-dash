@@ -2,6 +2,7 @@ import {
   addCity2Storage,
   fetchWeather,
   renderCurrent,
+  renderForecast,
   renderHistoryButtons,
 } from './lib.js';
 
@@ -12,6 +13,7 @@ document.querySelector('form').addEventListener('submit', async event => {
   const forecast = await fetchWeather(city);
 
   renderCurrent(city, forecast.current);
+  renderForecast(forecast.daily.slice(0, 5));
   addCity2Storage(city);
   renderHistoryButtons();
 });
