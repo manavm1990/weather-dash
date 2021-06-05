@@ -105,10 +105,10 @@ export const renderForecast = forecast => {
   const ul = document.createElement('ul');
   ul.classList.add('list-unstyled');
 
-  ul.innerHTML = forecast
-    .map((_, index) => `<li>${getDateWithAddlDays(index + 1)}</li>`)
-    .join('');
-
+  forecast.forEach(({ weather }, index) => {
+    dom.addContent2Li(ul, getDateWithAddlDays(index + 1));
+    dom.appendEl2Li(ul, createIcon(weather[0]));
+  });
   forecastSection.appendChild(ul);
 };
 
