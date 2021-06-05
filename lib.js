@@ -62,6 +62,7 @@ function renderCurrentHeading(heading, icon) {
 
 function renderCurrentWeather(currentWeather) {
   const ul = document.createElement('ul');
+  ul.classList.add('list-unstyled');
 
   ul.innerHTML = `
     <li>Temp: ${currentWeather.temp}°F</li>
@@ -118,12 +119,12 @@ export function renderCurrent(city, currentForecast) {
 export const renderForecast = forecast => {
   const forecastSection = document.querySelector('#forecast');
   const ul = document.createElement('ul');
+  ul.classList.add('list-unstyled');
 
   ul.innerHTML = forecast
     .map((_, index) => `<li>${getDate(index + 1)}</li>`)
     .join('');
 
-  console.log(ul, 'hi');
   forecastSection.appendChild(ul);
 };
 
