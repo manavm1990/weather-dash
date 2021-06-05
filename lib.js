@@ -1,7 +1,5 @@
 import config from './config.js';
-
-const current = document.querySelector('#current');
-const history = document.querySelector('#history');
+import dom from './dom.js';
 
 function capitalizeEachWord(str) {
   return str
@@ -57,7 +55,7 @@ function getDate(addlDays = 0) {
 function renderCurrentHeading(heading, icon) {
   // ⚠️ Don't try to compose `appendChild` 🤷🏾‍♂️
   heading.appendChild(icon);
-  current.appendChild(heading);
+  dom.current.appendChild(heading);
 }
 
 function renderCurrentWeather(currentWeather) {
@@ -71,11 +69,11 @@ function renderCurrentWeather(currentWeather) {
     <li>UV Index ${renderUVI(currentWeather.uvi)}</li>
   `;
 
-  current.appendChild(ul);
+  dom.current.appendChild(ul);
 }
 
 function renderHistoryButton(city) {
-  history.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
+  dom.history.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
 }
 
 function renderUVI(uvIndex) {
@@ -108,7 +106,7 @@ export const fetchWeather = city =>
     .then(({ lat, lon }) => fetchForecast(lat, lon));
 
 export function renderCurrent(city, currentForecast) {
-  current.innerHTML = '';
+  dom.current.innerHTML = '';
   const currentHeading = createCityDateHeading(city);
   const iconSpan = createIcon(currentForecast.weather[0]);
 
@@ -129,7 +127,7 @@ export const renderForecast = forecast => {
 };
 
 export function renderHistoryButtons() {
-  history.innerHTML = '';
+  dom.history.innerHTML = '';
 
   const searchHistory = localStorage.getItem('searchHistory');
 
