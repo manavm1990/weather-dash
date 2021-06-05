@@ -73,7 +73,7 @@ function renderCurrentWeather(currentWeather) {
 }
 
 function renderHistoryButton(city) {
-  dom.history.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
+  dom.historySection.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
 }
 
 function renderUVI(uvIndex) {
@@ -127,7 +127,7 @@ export const renderForecast = forecast => {
 };
 
 export function renderHistoryButtons() {
-  dom.history.innerHTML = '';
+  dom.historySection.innerHTML = '';
 
   const searchHistory = localStorage.getItem('searchHistory');
 
