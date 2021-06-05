@@ -1,18 +1,12 @@
 import config from './config.js';
 import dom from './dom.js';
-
-function capitalizeEachWord(str) {
-  return str
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
-}
+import { capitalizeEachWord, getDateWithAddlDays } from './utils.js';
 
 const createCityDateHeading = city => {
   const h2 = document.createElement('h2');
 
   h2.classList.add('fs-2', 'fw-bold');
-  h2.innerText = `${city} (${getDate()})`;
+  h2.innerText = `${city} (${getDateWithAddlDays()})`;
 
   return h2;
 };
@@ -43,14 +37,6 @@ const fetchForecast = async (lat, lon) => {
 
   return data.json();
 };
-
-function getDate(addlDays = 0) {
-  const now = new Date(Date.now());
-
-  return `${now.getMonth() + 1}/${
-    now.getDate() + addlDays
-  }/${now.getFullYear()}`;
-}
 
 function renderCurrentHeading(heading, icon) {
   // ⚠️ Don't try to compose `appendChild` 🤷🏾‍♂️
@@ -120,7 +106,7 @@ export const renderForecast = forecast => {
   ul.classList.add('list-unstyled');
 
   ul.innerHTML = forecast
-    .map((_, index) => `<li>${getDate(index + 1)}</li>`)
+    .map((_, index) => `<li>${getDateWithAddlDays(index + 1)}</li>`)
     .join('');
 
   forecastSection.appendChild(ul);
