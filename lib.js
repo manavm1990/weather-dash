@@ -106,11 +106,14 @@ export function renderCurrent(city, currentForecast, timezone) {
 
 export const renderForecast = forecast => {
   const forecastSection = document.querySelector('#forecast');
+  const header = document.createElement('header');
   const h2 = document.createElement('h2');
 
-  h2.classList.add('ms-2');
+  header.classList.add('container');
   h2.innerText = '5-Day Forecast';
-  forecastSection.appendChild(h2);
+
+  header.appendChild(h2);
+  forecastSection.appendChild(header);
 
   forecast.forEach(
     (
@@ -132,7 +135,7 @@ export const renderForecast = forecast => {
         ul,
         luxon.DateTime.local()
           .setZone(timezone)
-          .plus({ days: index + 2 })
+          .plus({ days: index + 1 })
           .endOf('day')
           .toLocaleString(),
         'fs-4',
