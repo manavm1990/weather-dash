@@ -3,7 +3,17 @@ import config from './config.js';
 import dom from './dom.js';
 import { capitalizeEachWord } from './utils.js';
 
-const createCityDateHeading = (city, timezone) => {
+function addCity2Storage(city) {
+  const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+  if (!searchHistory.includes(capitalizeEachWord(city))) {
+    localStorage.setItem(
+      'searchHistory',
+      JSON.stringify([...searchHistory, capitalizeEachWord(city)]),
+    );
+  }
+}
+
+function createCityDateHeading(city, timezone) {
   const h2 = document.createElement('h2');
 
   h2.classList.add('fs-2', 'fw-bold');
@@ -13,9 +23,9 @@ const createCityDateHeading = (city, timezone) => {
     .toLocaleString()})`;
 
   return h2;
-};
+}
 
-const createIcon = weatherInfo => {
+function createIcon(weatherInfo) {
   const span = document.createElement('span');
 
   span.innerHTML = `<img src="https://openweathermap.org/img/w/${
@@ -23,24 +33,30 @@ const createIcon = weatherInfo => {
   }.png" alt="${weatherInfo.description || weatherInfo.main}" />`;
 
   return span;
-};
+}
 
-const fetchCoord = async city => {
+async function fetchCoord(city) {
   const data = await fetch(
     `${config.WEATHER_URL}?q=${city}&appid=${config.API_KEY}`,
   );
 
   const { coord } = await data.json();
   return coord;
-};
+}
 
-const fetchForecast = async (lat, lon) => {
+async function fetchForecast(lat, lon) {
   const data = await fetch(
     `${config.FORECAST_URL}?&appid=${config.API_KEY}&lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial`,
   );
 
   return data.json();
-};
+}
+
+function fetchWeather(city) {
+  return fetchCoord(city)
+    .then(coords => coords)
+    .then(({ lat, lon }) => fetchForecast(lat, lon));
+}
 
 function renderCurrentHeading(heading, icon) {
   // ⚠️ Don't try to compose `appendChild` 🤷🏾‍♂️
@@ -62,49 +78,7 @@ function renderCurrentWeather(currentWeather) {
   dom.current.appendChild(ul);
 }
 
-function renderHistoryButton(city) {
-  dom.historySection.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
-}
-
-function renderUVI(uvIndex) {
-  let className;
-
-  if (uvIndex < 3) {
-    className = 'bg-success';
-  } else if (uvIndex < 7) {
-    className = 'bg-warning';
-  } else {
-    className = 'bg-danger';
-  }
-
-  return `<span class="badge rounded-pill ${className}">${uvIndex}</span>`;
-}
-
-export const addCity2Storage = city => {
-  const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-  if (!searchHistory.includes(capitalizeEachWord(city))) {
-    localStorage.setItem(
-      'searchHistory',
-      JSON.stringify([...searchHistory, capitalizeEachWord(city)]),
-    );
-  }
-};
-
-export const fetchWeather = city =>
-  fetchCoord(city)
-    .then(coords => coords)
-    .then(({ lat, lon }) => fetchForecast(lat, lon));
-
-export function renderCurrent(city, currentForecast, timezone) {
-  dom.current.innerHTML = '';
-  const currentHeading = createCityDateHeading(city, timezone);
-  const iconSpan = createIcon(currentForecast.weather[0]);
-
-  renderCurrentHeading(currentHeading, iconSpan);
-  renderCurrentWeather(currentForecast);
-}
-
-export const renderForecast = forecast => {
+function renderForecast(forecast) {
   const forecastSection = document.querySelector('#forecast');
   const header = document.createElement('header');
   const h2 = document.createElement('h2');
@@ -153,6 +127,37 @@ export const renderForecast = forecast => {
 
   lastUl.classList.remove('mb-2');
   lastUl.classList.add('mb-0');
+}
+
+function renderHistoryButton(city) {
+  dom.historySection.innerHTML += `<li class="list-group-item text-center"><button class="bg-secondary text-light">${city}</button></li>`;
+}
+
+function renderUVI(uvIndex) {
+  let className;
+
+  if (uvIndex < 3) {
+    className = 'bg-success';
+  } else if (uvIndex < 7) {
+    className = 'bg-warning';
+  } else {
+    className = 'bg-danger';
+  }
+
+  return `<span class="badge rounded-pill ${className}">${uvIndex}</span>`;
+}
+
+export const render = async city => {
+  const weather = await fetchWeather(city);
+  const currentHeading = createCityDateHeading(city, weather.timezone);
+  const iconSpan = createIcon(weather.current.weather[0]);
+
+  dom.current.innerHTML = '';
+
+  addCity2Storage(city);
+  renderCurrentHeading(currentHeading, iconSpan);
+  renderCurrentWeather(weather.current);
+  renderForecast(weather.daily.slice(0, 5));
 };
 
 export function renderHistoryButtons() {
