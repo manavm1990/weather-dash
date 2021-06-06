@@ -24,6 +24,7 @@ document.querySelector('#history').addEventListener('click', async event => {
   const forecast = await fetchWeather(city);
 
   renderCurrent(city, forecast.current);
+  renderForecast(forecast.daily.slice(0, 5));
 });
 
 renderHistoryButtons();
