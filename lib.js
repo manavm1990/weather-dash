@@ -1,12 +1,16 @@
+/* global luxon */
 import config from './config.js';
 import dom from './dom.js';
-import { capitalizeEachWord, getDateWithAddlDays } from './utils.js';
+import { capitalizeEachWord } from './utils.js';
 
-const createCityDateHeading = city => {
+const createCityDateHeading = (city, timezone) => {
   const h2 = document.createElement('h2');
 
   h2.classList.add('fs-2', 'fw-bold');
-  h2.innerText = `${city} (${getDateWithAddlDays()})`;
+  h2.innerText = `${city} (${luxon.DateTime.local()
+    .setZone(timezone)
+    .endOf('day')
+    .toLocaleString()})`;
 
   return h2;
 };
@@ -91,9 +95,9 @@ export const fetchWeather = city =>
     .then(coords => coords)
     .then(({ lat, lon }) => fetchForecast(lat, lon));
 
-export function renderCurrent(city, currentForecast) {
+export function renderCurrent(city, currentForecast, timezone) {
   dom.current.innerHTML = '';
-  const currentHeading = createCityDateHeading(city);
+  const currentHeading = createCityDateHeading(city, timezone);
   const iconSpan = createIcon(currentForecast.weather[0]);
 
   renderCurrentHeading(currentHeading, iconSpan);
@@ -109,7 +113,10 @@ export const renderForecast = forecast => {
   forecastSection.appendChild(h2);
 
   forecast.forEach(
-    ({ weather, temp: { day }, wind_speed: windSpeed, humidity }, index) => {
+    (
+      { timezone, weather, temp: { day }, wind_speed: windSpeed, humidity },
+      index,
+    ) => {
       const ul = document.createElement('ul');
       ul.classList.add(
         'bg-info',
@@ -121,7 +128,16 @@ export const renderForecast = forecast => {
         'py-2',
       );
 
-      dom.addContent2Ul(ul, getDateWithAddlDays(index + 1), 'fs-4', 'fw-bold');
+      dom.addContent2Ul(
+        ul,
+        luxon.DateTime.local()
+          .setZone(timezone)
+          .plus({ days: index + 2 })
+          .endOf('day')
+          .toLocaleString(),
+        'fs-4',
+        'fw-bold',
+      );
       dom.appendEl2Ul(ul, createIcon(weather[0]));
       dom.addContent2Ul(ul, `Temp: ${day}°F`);
       dom.addContent2Ul(ul, `Wind Speed: ${windSpeed} MPH`);

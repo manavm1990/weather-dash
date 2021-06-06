@@ -12,7 +12,7 @@ document.querySelector('form').addEventListener('submit', async event => {
   const city = event.target.elements[0].value;
   const forecast = await fetchWeather(city);
 
-  renderCurrent(city, forecast.current);
+  renderCurrent(city, forecast.current, forecast.timezone);
   renderForecast(forecast.daily.slice(0, 5));
   addCity2Storage(city);
   renderHistoryButtons();
