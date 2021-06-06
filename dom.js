@@ -1,12 +1,19 @@
 export default {
   current: document.querySelector('#current'),
   historySection: document.querySelector('#history'),
-  addContent2Li(list, content) {
+  addContent2Ul(list, content, ...classes) {
+    console.log(classes, 'an');
     const li = document.createElement('li');
+    if (classes.length) {
+      classes.forEach(cl => {
+        li.classList.add(cl);
+      });
+    }
+
     li.innerHTML = `${content}`;
     list.appendChild(li);
   },
-  appendEl2Li(list, el) {
+  appendEl2Ul(list, el) {
     const li = document.createElement('li');
     li.appendChild(el);
     list.appendChild(li);
